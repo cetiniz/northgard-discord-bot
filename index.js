@@ -11,8 +11,7 @@ const createNewChunk = () => {
 
 //in case the bot was not configured properly
 if(!config.PREFIX || !config.BOT_TOKEN) {
-    console.error("Error: the configuration file was configured properly.");
-    console.error("Make sure there are no spelling mistakes.");
+    console.error("Error: The configuration file was configured improperly. Please ensure there are no spelling mistakes.");
     process.exit(1);
 }
 
