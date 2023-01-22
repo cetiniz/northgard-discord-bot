@@ -1,14 +1,14 @@
 {
-	"name": "discord-voice-recorder",
+	"name": "northgard-discord-bot",
 	"version": "1.0.0",
-	"description": "A nifty script that can pipe out audio from a voice channel to your local storage.",
+	"description": "A discord bot for drafting northgard teams",
 	"main": "index.js",
 	"type": "module",
 	"scripts": {
 		"start": "node index.js"
 	},
 	"keywords": [],
-	"author": "Sravanth Chebrolu",
+	"author": "Zachary Cetinic",
 	"license": "MIT",
 	"engines": {
 		"node": ">=12.0.0"
