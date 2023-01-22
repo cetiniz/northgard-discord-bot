@@ -35,14 +35,13 @@ export const command = {
         .setName(DraftCommand.WINNER)
         .setDescription('Set the winner for the northgard game!')),
     async execute(interaction) {
-        const target = interaction.options.getUser('target');
-		const reason = interaction.options.getString('reason') ?? 'No reason provided';
-
-        console.log(target, reason);
+        console.log(interaction);
+        const target = interaction.user;
+		// const reason = interaction.options.getString('reason') ?? 'No reason provided';
 
         switch (interaction.options.getSubcommand()) {
             case DraftCommand.START: {
-		        await interaction.reply(`Banning ${target.username} for reason: ${reason}`);
+		        await interaction.reply(`Banning ${target.username} for reason: being a degenerate`);
             }
             case DraftCommand.STOP: {
             }
@@ -54,7 +53,7 @@ export const command = {
             }
         }
 
-		await interaction.reply(`Banning ${target.username} for reason: ${reason}`);
+		await interaction.reply(`Banning ${target.username} for reason: being a degenerate`);
         // await interaction.guild.members.ban(target);
     },
 };
