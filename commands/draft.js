@@ -8,7 +8,7 @@ const DraftCommand = {
     SELECT: 'select',
 };
 
-export default {
+export const command = {
     data: new SlashCommandBuilder()
     .setName('draft')
     .setDescription('Provides information about the user.')
