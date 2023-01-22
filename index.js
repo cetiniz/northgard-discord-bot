@@ -1,13 +1,10 @@
-import { Client, Constants, Collection } from 'discord.js';
-import { GatewayIntentBits } from 'discord-api-types/gateway/v10';
+import { Client, Collection, GatewayIntentBits, Events } from 'discord.js';
 import Sequelize from 'sequelize';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
 import fs from 'fs';
 import config from './config.json' assert { type: 'json' };
-
-const {Events} = Constants;
 
 //------------ Northgard Database -----------//
 const sequelize = new Sequelize('database', 'user', 'password', {
@@ -19,7 +16,11 @@ const sequelize = new Sequelize('database', 'user', 'password', {
 });
 
 //------------ DiscordJS Client -------------//
-const client = new Client({ intents: [GatewayIntentBits.Guilds] });
+const client = new Client({ intents: [
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.GuildIntegrations,
+] });
 client.once(Events.ClientReady, () => {
     console.log(`\nONLINE\n`);
 });
@@ -34,7 +35,7 @@ const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('
 
 for (const file of commandFiles) {
 	const filePath = path.join(commandsPath, file);
-	const command = await import(filePath);
+	const {command} = await import(filePath);
 	// Set a new item in the Collection with the key as the command name and the value as the exported module
 	if ('data' in command && 'execute' in command) {
 		client.commands.set(command.data.name, command);
@@ -64,7 +65,7 @@ client.on(Events.InteractionCreate, async interaction => {
 });
 
 //------------- Message Create Callback --------------//
-client.on(Events.MESSAGE_CREATE, async message => {
+client.on(Events.MessageCreate, async message => {
     console.log(message);
 });
 

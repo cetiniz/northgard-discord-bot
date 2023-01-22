@@ -6,6 +6,7 @@ const DraftCommand = {
     STOP: 'stop',
     RESTART: 'restart',
     SELECT: 'select',
+    WINNER: 'winner',
 };
 
 export const command = {
@@ -27,14 +28,21 @@ export const command = {
     .addSubcommand(subcommand =>
         subcommand
         .setName(DraftCommand.SELECT)
-        .setDescription('Select a member for your Northgard team'))
+        .setDescription('Select a member for your Northgard team')
+        .addUserOption(option => option.setName('player').setDescription('The player you want on your team')))
     .addSubcommand(subcommand =>
         subcommand
-        .setName('select')
-        .setDescription('Select a member for your Northgard team')),
+        .setName(DraftCommand.WINNER)
+        .setDescription('Set the winner for the northgard game!')),
     async execute(interaction) {
+        const target = interaction.options.getUser('target');
+		const reason = interaction.options.getString('reason') ?? 'No reason provided';
+
+        console.log(target, reason);
+
         switch (interaction.options.getSubcommand()) {
             case DraftCommand.START: {
+		        await interaction.reply(`Banning ${target.username} for reason: ${reason}`);
             }
             case DraftCommand.STOP: {
             }
@@ -45,10 +53,8 @@ export const command = {
             default: {
             }
         }
-        const target = interaction.options.getUser('target');
-		const reason = interaction.options.getString('reason') ?? 'No reason provided';
 
 		await interaction.reply(`Banning ${target.username} for reason: ${reason}`);
-		await interaction.guild.members.ban(target);
+        // await interaction.guild.members.ban(target);
     },
 };
