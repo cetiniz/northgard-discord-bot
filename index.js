@@ -1,9 +1,8 @@
-const Discord = require('discord.js');
+import { Client, Events, GatewayIntentBits } from 'discord.js';
 import Sequelize from 'sequelize';
 
-const fs = require('fs');
-const config = require('./config.json');
-
+import fs from 'fs';
+import config from './config.json' assert { type: 'json' };
 
 //------------ Northgard Database -----------//
 const sequelize = new Sequelize('database', 'user', 'password', {
@@ -15,7 +14,7 @@ const sequelize = new Sequelize('database', 'user', 'password', {
 });
 
 //------------ DiscordJS Client -------------//
-const client = new Discord.Client({ intents: [GatewayIntentBits.Guilds] });
+const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 client.once(Events.ClientReady, () => {
     console.log(`\nONLINE\n`);
 });
@@ -52,53 +51,6 @@ client.on(Events.InteractionCreate, async interaction => {
     } catch (error) {
         console.error(error);
         await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
-    }
-});
-
-
-client.on('message', msg => {
-    if (msg.content.startsWith(config.PREFIX)) {
-        const commandBody = msg.content.substring(config.PREFIX.length).split(' ');
-        const channelName = commandBody[1];
-
-        if (commandBody[0] === ('enter') && commandBody[1]) {
-            const voiceChannel = msg.guild.channels.cache.find(channel => channel.name === channelName);
-
-            if (!voiceChannel || voiceChannel.type !== 'voice')
-                return msg.reply(`The channel #${channelName} doesn't exist or isn't a voice channel.`);
-
-            console.log(`Sliding into ${voiceChannel.name}...`);
-            voiceChannel.join()
-                .then(conn => {
-
-                    const dispatcher = conn.play('./sounds/ding.mp3');
-                    dispatcher.on('start', () => { console.log('ding.mp3 is playing..'); });
-                    dispatcher.on('finish', () => { console.log('ding.mp3 has finished playing..'); });
-                    console.log(`Joined ${voiceChannel.name}!\n\nREADY TO RECORD\n`);
-
-                    const receiver = conn.receiver;
-                    conn.on('speaking', (user, speaking) => {
-                        if (speaking) {
-                            console.log(`${user.username} started speaking`);
-                            const audioStream = receiver.createStream(user, { mode: 'pcm' });
-                            audioStream.pipe(createNewChunk());
-                            audioStream.on('end', () => { console.log(`${user.username} stopped speaking`); });
-                        }
-                    });
-                })
-                .catch(err => { throw err; });
-        }
-        if (commandBody[0] === ('exit') && commandBody[1]) {
-            const voiceChannel = msg.guild.channels.cache.find(channel => channel.name === channelName);
-            if (!voiceChannel || voiceChannel.type !== 'voice') {
-                return msg.reply(`The channel #${channelName} doesn't exist or isn't a voice channel.`);
-            }
-            else {
-                voiceChannel.leave();
-                console.log(`Slipping out of ${voiceChannel.name}...`);
-                console.log(`\nSTOPPED RECORDING\n`);
-            }
-        }
     }
 });
 
