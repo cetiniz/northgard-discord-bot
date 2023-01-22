@@ -42,6 +42,7 @@ export const command = {
         switch (interaction.options.getSubcommand()) {
             case DraftCommand.START: {
 		        await interaction.reply(`Banning ${target.username} for reason: being a degenerate`);
+                break;
             }
             case DraftCommand.STOP: {
             }
@@ -50,10 +51,9 @@ export const command = {
             case DraftCommand.SELECT: {
             }
             default: {
+		        await interaction.reply(`Command not recognized!`);
+                break;
             }
         }
-
-		await interaction.reply(`Banning ${target.username} for reason: being a degenerate`);
-        // await interaction.guild.members.ban(target);
     },
 };
