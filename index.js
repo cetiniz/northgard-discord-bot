@@ -1,8 +1,13 @@
-import { Client, Events, GatewayIntentBits } from 'discord.js';
+import { Client, Constants, Collection } from 'discord.js';
+import { GatewayIntentBits } from 'discord-api-types/gateway/v10';
 import Sequelize from 'sequelize';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 import fs from 'fs';
 import config from './config.json' assert { type: 'json' };
+
+const {Events} = Constants;
 
 //------------ Northgard Database -----------//
 const sequelize = new Sequelize('database', 'user', 'password', {
@@ -22,12 +27,14 @@ client.once(Events.ClientReady, () => {
 //------------ DiscordJS Commands Registery --------//
 client.commands = new Collection();
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 const commandsPath = path.join(__dirname, 'commands');
 const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
 
 for (const file of commandFiles) {
 	const filePath = path.join(commandsPath, file);
-	const command = require(filePath);
+	const command = await import(filePath);
 	// Set a new item in the Collection with the key as the command name and the value as the exported module
 	if ('data' in command && 'execute' in command) {
 		client.commands.set(command.data.name, command);

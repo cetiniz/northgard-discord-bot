@@ -1,4 +1,4 @@
-import { SlashCommandBuilder } from 'discord.js';
+import { SlashCommandBuilder } from '@discordjs/builders';
 
 const DraftCommand = {
     DRAFT: 'draft',
@@ -8,7 +8,7 @@ const DraftCommand = {
     SELECT: 'select',
 };
 
-module.exports = {
+export const commands = {
     data: new SlashCommandBuilder()
     .setName('draft')
     .setDescription('Provides information about the user.')
